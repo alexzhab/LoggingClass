@@ -16,6 +16,7 @@ private:
   static inline int m_log_limit = 0;
   static inline bool m_ignore_log_limit = false;
   static inline bool m_debug = false;
+  static inline bool m_reached_log_limit = false;
 
 public:
   Logging() = default;
@@ -25,6 +26,7 @@ public:
 
   static void set_log_limit(int log_limit) {
     m_log_limit = log_limit;
+    m_reached_log_limit = false;
   }
 
   static void set_ignore_log_limit(bool ignore_log_limit) {
@@ -49,8 +51,9 @@ public:
         std::cout << get_string(ANSI_blue, "Log: ", msg) << std::endl;
         s_count++;
       }
-      if (s_count == m_log_limit && !m_ignore_log_limit) {
-        std::cout << "Maximum number of log messages is reached." << std::endl;
+      else if (!m_reached_log_limit) {
+        std::cout << "Maximum number of log messages is reached: " << s_count << std::endl;
+        m_reached_log_limit = true;
       }
     }
     else if (msg_type == MessageType::Debug) {
