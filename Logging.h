@@ -1,14 +1,16 @@
 #include <string>
 #include <iostream>
 
-static const int ANSI_red = 196;
-static const int ANSI_orange = 214;
-static const int ANSI_blue = 33;
-
 enum class MessageType {
   Important,
   Log,
   Debug
+};
+
+enum class MessageColor {
+  ANSI_red = 196,
+  ANSI_orange = 214,
+  ANSI_blue = 33
 };
 
 class Logging {
@@ -37,20 +39,20 @@ public:
     m_debug = debug;
   }
 
-  static std::string get_colored_string(const int color, const std::string & code, const std::string & msg) {
-    return "\033[38;5;" + std::to_string(color) + "m" + code + msg + "\033[39m";
+  static std::string get_colored_string(const MessageColor & color, const std::string & code, const std::string & msg) {
+    return "\033[38;5;" + std::to_string(int(color)) + "m" + code + msg + "\033[39m";
   }
 
   static void print_msg(const std::string & msg, const MessageType & msg_type) {
     switch(msg_type) {
       case MessageType::Important: {
-        std::cout << get_colored_string(ANSI_red, "Important: ", msg) << std::endl;
+        std::cout << get_colored_string(MessageColor::ANSI_red, "Important: ", msg) << std::endl;
         break;
       }
       case MessageType::Log: {
         static int s_count = 0;
         if (s_count < m_log_limit || m_ignore_log_limit) {
-          std::cout << get_colored_string(ANSI_blue, "Log: ", msg) << std::endl;
+          std::cout << get_colored_string(MessageColor::ANSI_blue, "Log: ", msg) << std::endl;
           s_count++;
         }
         else if (!m_reached_log_limit) {
@@ -61,7 +63,7 @@ public:
       }
       case MessageType::Debug: {
         if (m_debug)
-          std::cout << get_colored_string(ANSI_orange, "Debug: ", msg) << std::endl;
+          std::cout << get_colored_string(MessageColor::ANSI_orange, "Debug: ", msg) << std::endl;
         break;
       }
     }
