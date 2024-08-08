@@ -36,7 +36,7 @@ public:
   }
 
   static std::string get_string(const int colour, const std::string & code, const std::string & msg) {
-    return "\033[38;5;" + std::to_string(colour) + "m" + code + msg;
+    return "\033[38;5;" + std::to_string(colour) + "m" + code + msg + "\033[39m";
   }
 
   static void print_msg(const std::string & msg, const MessageType & msg_type) {
@@ -49,8 +49,9 @@ public:
         std::cout << get_string(ANSI_blue, "Log: ", msg) << std::endl;
         s_count++;
       }
-      else if (s_count == m_log_limit && !m_ignore_log_limit)
+      if (s_count == m_log_limit && !m_ignore_log_limit) {
         std::cout << "Maximum number of log messages is reached." << std::endl;
+      }
     }
     else if (msg_type == MessageType::Debug) {
       if (m_debug)
