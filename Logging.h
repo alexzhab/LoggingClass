@@ -42,23 +42,28 @@ public:
   }
 
   static void print_msg(const std::string & msg, const MessageType & msg_type) {
-    if (msg_type == MessageType::Important) {
-      std::cout << get_colored_string(ANSI_red, "Important: ", msg) << std::endl;
-    }
-    else if (msg_type == MessageType::Log) {
-      static int s_count = 0;
-      if (s_count < m_log_limit || m_ignore_log_limit) {
-        std::cout << get_colored_string(ANSI_blue, "Log: ", msg) << std::endl;
-        s_count++;
+    switch(msg_type) {
+      case MessageType::Important: {
+        std::cout << get_colored_string(ANSI_red, "Important: ", msg) << std::endl;
+        break;
       }
-      else if (!m_reached_log_limit) {
-        std::cout << "Maximum number of log messages is reached: " << s_count << std::endl;
-        m_reached_log_limit = true;
+      case MessageType::Log: {
+        static int s_count = 0;
+        if (s_count < m_log_limit || m_ignore_log_limit) {
+          std::cout << get_colored_string(ANSI_blue, "Log: ", msg) << std::endl;
+          s_count++;
+        }
+        else if (!m_reached_log_limit) {
+          std::cout << "Maximum number of log messages is reached: " << s_count << std::endl;
+          m_reached_log_limit = true;
+        }
+        break;
       }
-    }
-    else if (msg_type == MessageType::Debug) {
-      if (m_debug)
-        std::cout << get_colored_string(ANSI_orange, "Debug: ", msg) << std::endl;
+      case MessageType::Debug: {
+        if (m_debug)
+          std::cout << get_colored_string(ANSI_orange, "Debug: ", msg) << std::endl;
+        break;
+      }
     }
   }
 };
